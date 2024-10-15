@@ -14,14 +14,22 @@ from openpyxl.drawing.image import Image as Imgxl
 
 user = os.getlogin()
 
-files = glob.glob("C:/yolo/ultralytics/runs/detect/predict" + "/*.png", recursive=True)
+types = ('jpg','jpeg')
+files = []
+for t in types:
+    files += glob.glob("C:/yolo/ultralytics/runs/detect/predict3/*." + t, recursive=True)
+print(len(files))
+
+
 dir_path = "C:/yolo/AI-Pred-Data/step4/"
+
+filesPNG = [s for s in files if "PMX" in s]
 
 allImaget = []
 allImage = []
 filenameSv = ""
 
-for file in files:
+for file in filesPNG:
 
     filename = os.path.basename(file)
     img = cv2.imread(file, -1)
@@ -78,5 +86,10 @@ for img in allImage:
         j = 0  
         colsImage.append(image_v)
 image_H = cv2.vconcat(colsImage)
+
+mask = np.all(image_H[:,:,:] == [255, 255, 255],axis=-1)
+dst = cv2.cvtColor(image_H, cv2.COLOR_BGR2BGRA)
+dst[mask,3] = 0
+
 print(filenameSv)
-cv2.imwrite(dir_path + filenameSv + "-s" + ".png", image_H)
+cv2.imwrite(dir_path + filenameSv + "-s" + ".png", dst)
