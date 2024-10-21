@@ -1,10 +1,10 @@
 from ultralytics import YOLO
 import subprocess
 
-#runPath = "C:/PylocalYolo/yolov5/data/mmletter/images/MIpyprep.bat"
-#proc = subprocess.Popen(runPath)
-#result = proc.communicate() 
-#print("Prepared Floders")
+runPath = "C:/yolo/AI-Pred-Data/MIpyprep.bat"
+proc = subprocess.Popen(runPath)
+result = proc.communicate() 
+print("Prepared Floders")
 
 command = ["python.exe", "ultralytics/detectes11png.py"]
 proc = subprocess.Popen(command)  #->コマンドが実行される(処理の終了は待たない)
@@ -21,7 +21,7 @@ proc = subprocess.Popen(command3)
 result = proc.communicate() 
 print("sub-images cropped")
 
-model = YOLO("ultralytics/best1014.pt")
+model = YOLO("ultralytics/beste200.pt")
 # --save-txt --save-csv --line-thickness 1 --hide-labels --conf 0.20
 results = model("C:/yolo/AI-Pred-Data/step2/",save=True,save_txt=True,save_conf=True,show_labels=False,show_conf=False,line_width=1)
 
@@ -40,7 +40,12 @@ proc = subprocess.Popen(command6)
 result = proc.communicate() 
 print("main-sub marged")
 
-#command7 = ["python.exe", "copyafterU11.py"]
-#proc = subprocess.Popen(command7)  
-#result = proc.communicate() 
-#print("Pi Bi")
+command7 = ["python.exe", "ultralytics/txtcsv.py"]
+proc = subprocess.Popen(command7)  
+result = proc.communicate() 
+print("txtcsv Pi Bi")
+
+command8 = ["python.exe", "ultralytics/copyafterU11.py"]
+proc = subprocess.Popen(command8)  
+result = proc.communicate() 
+print("Pi Bi")

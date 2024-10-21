@@ -17,7 +17,7 @@ user = os.getlogin()
 types = ('jpg','jpeg')
 files = []
 for t in types:
-    files += glob.glob("C:/yolo/ultralytics/runs/detect/predict3/*." + t, recursive=True)
+    files += glob.glob("C:/yolo/ultralytics/runs/detect/predict/*." + t, recursive=True)
 print(len(files))
 
 dir_path = "C:/yolo/AI-Pred-Data/step3/"

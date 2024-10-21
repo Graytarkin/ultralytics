@@ -18,7 +18,8 @@ dirOfPredx = "C:/yolo/AI-Pred-Data/step6/"
 # 各クラスタリングアルゴリズムの設定
 algorithms = [3,4,5,6,7,8]
 
-with open("C:/yolo/ultralytics/runs/detect/predict/predictions.csv", encoding="utf-8") as file:
+with open("C:/yolo/AI-Pred-Data/step5/predictions.csv", encoding="utf-8") as file:
+#with open("C:/yolo/ultralytics/runs/detect/predict/predictions.csv", encoding="utf-8") as file:
     lst = list(csv.reader(file))
 
 saveF = ""
@@ -28,7 +29,10 @@ for listl in lst:
     lcnt = lcnt + 1
     dotPos = listl[0].rfind(".")
     listltype = listl[0][dotPos + 1:]
-
+    listlname = listl[0][:dotPos]
+#    print("listname",listlname)
+    if "PMX" in listlname:
+        listltype = "png"
     if listl[0][:dotPos] != saveF:
         saveF = listl[0][:dotPos]
         textCnt = 0
@@ -45,29 +49,38 @@ for listl in lst:
     else:
         posfnameE = listl[0].rfind("-N")
         fname = listl[0][:posfnameE]
-                
-    elmm = [listl[0],listl[1],listl[2],listtxtS[textCnt][0],listtxtS[textCnt][1],listtxtS[textCnt][2],listtxtS[textCnt][3],listtxtS[textCnt][4],fname]
+
+#YOLOv11
+    elmm = [listl[0],listl[2],listtxtS[textCnt][5],listtxtS[textCnt][0],listtxtS[textCnt][1],listtxtS[textCnt][2],listtxtS[textCnt][3],listtxtS[textCnt][4],fname]
+#YOLOv5                 
+#    elmm = [listl[0],listl[1],listl[2],listtxtS[textCnt][0],listtxtS[textCnt][1],listtxtS[textCnt][2],listtxtS[textCnt][3],listtxtS[textCnt][4],fname]
     textCnt +=1
     excelWRl.append(elmm)
 #print(excelWRl)
 
-filesp = glob.glob("C:/PylocalYolo/yolov5/runs/detect/exp" + "/*.png", recursive=True)
-for file in filesp:
+types = ('jpg','jpeg','png')
+filespg = []
+for t in types:
+    filespg += glob.glob("C:/yolo/ultralytics/runs/detect/predict/*." + t, recursive=True)
+print(len(filespg))
+
+for file in filespg:
     filename = os.path.basename(file)
-    posfnameE = listl[0].rfind("PMX")
-    fname = listl[0][:posfnameE]
+    dotPos = filename[0].rfind(".")
+#    listltype = listl[0][dotPos + 1:]
+    listlname = filename[0][:dotPos]
+#    print("listname2",listlname)
+    if "PMX" in listlname:
+        listltype = "png"
+    else:
+        listltype = "jpg"       
+    listlname = listl[0][:dotPos]
+#    print("listname3",listlname)
+    if "PMX" in listlname:
+        posfnameE = listl[0].rfind("PMX")
+    else:
+        posfnameE = listl[0].rfind("-N")
     if not(any(filename in row for row in excelWRl)):
-        elmm = [filename,'','0','0','0','0','0','0',fname]
-        textCnt +=1
-        excelWRl.append(elmm)
-
-
-filesg = glob.glob("C:/PylocalYolo/yolov5/runs/detect/exp" + "/*.Jpeg", recursive=True)
-for file in filesg:
-    filename = os.path.basename(file)
-    posfnameE = listl[0].rfind("-N")
-    fname = listl[0][:posfnameE]
-    if not (any(filename in row for row in excelWRl)):
         elmm = [filename,'','0','0','0','0','0','0',fname]
         textCnt +=1
         excelWRl.append(elmm)
@@ -89,7 +102,14 @@ for dataelm in sortedexcelWRl:
     exPosR = exPosR + 1
 #   
     posDot = exName[0].rfind(".")
-    filetype = exName[0][posDot + 1:]
+#    filetype = exName[0][posDot + 1:]
+    filename = exName[0][:posDot]
+    if "PMX" in filename:
+        filetype = "png"
+        posfnameE = listl[0].rfind("PMX")
+    else:
+        filetype = "jpg"
+        posfnameE = listl[0].rfind("-N")
 #    print(filetype)
     if filetype == "png":
         posRCC = exName[0].rfind("C")
@@ -718,97 +738,106 @@ for clsElm in xerai:
         ws = wb.active          
         exOutNmsv = exOutNm
 
-        column_width = {'A': 1, 'B': 1, 'C': 1, 'D': 1, 'E': 1,'F': 1, 'G': 1, 'H': 1,
-                    'I': 1, 'J': 1, 'K': 1, 'L': 1, 'M': 1,'N': 1, 'O': 1, 'P': 1,
-                    'Q': 1, 'R': 1, 'S': 1, 'T': 1, 'U': 1,'V': 1, 'W': 1, 'X': 1,
-                    'Y': 1, 'Z': 1, 'AA': 1, 'AB': 1, 'AC': 1,'AD': 1, 'AE': 1, 'AF': 1,
-                    'AG': 1, 'AH': 1, 'AI': 1, 'AJ': 1, 'AK': 1,'AL': 1, 'AM': 1, 'AN': 1,
-                    'AO': 1, 'AP': 1, 'AQ': 1, 'AR': 1, 'AS': 1,'AT': 1, 'AU': 1, 'AV': 1,
-                    'AW': 1, 'AX': 1, 'AY': 1, 'AZ': 1,
-                    'BA': 1, 'BB': 1, 'BC': 1, 'BD': 1,'BE': 1, 'BF': 1,
-                    'BG': 1, 'BH': 1, 'BI': 1, 'BJ': 1, 'BK': 1,'BL': 1, 'BM': 1, 'BN': 1,
-                    'BO': 1, 'BP': 1, 'BQ': 1, 'BR': 1, 'BS': 1,'BT': 1, 'BU': 1, 'BV': 1,
-                    'BW': 1, 'BX': 1, 'BY': 1, 'BZ': 1,
-                    'CA': 1, 'CB': 1, 'CC': 1, 'CD': 1,'CE': 1, 'CF': 1,
-                    'CG': 1, 'CH': 1, 'CI': 1, 'CJ': 1, 'CK': 1,'CL': 1, 'CM': 1, 'CN': 1,
-                    'CO': 1, 'CP': 1, 'CQ': 1, 'CR': 1, 'CS': 1,'CT': 1, 'CU': 1, 'CV': 1,
-                    'CW': 1, 'CX': 1, 'CY': 1, 'CZ': 1,
-                    'DA': 1, 'DB': 1, 'DC': 1, 'DD': 1,'DE': 1, 'DF': 1,
-                    'DG': 1, 'DH': 1, 'DI': 1, 'DJ': 1, 'DK': 1,'DL': 1, 'DM': 1, 'DN': 1,
-                    'DO': 1, 'DP': 1, 'DQ': 1, 'DR': 1, 'DS': 1,'DT': 1, 'DU': 1, 'DV': 1,
-                    'DW': 1, 'DX': 1, 'DY': 1, 'DZ': 1,  
-                    'EA': 1, 'EB': 1, 'EC': 1, 'ED': 1,'EE': 1, 'EF': 1,
-                    'EG': 1, 'EH': 1, 'EI': 1, 'EJ': 1, 'EK': 1,'EL': 1, 'EM': 1, 'EN': 1,
-                    'EO': 1, 'EP': 1, 'EQ': 1, 'ER': 1, 'ES': 1,'ET': 1, 'EU': 1, 'EV': 1,
-                    'EW': 1, 'EX': 1, 'EY': 1, 'EZ': 1,
-                    'FA': 1, 'FB': 1, 'FC': 1, 'FD': 1,'FE': 1, 'FF': 1,
-                    'FG': 1, 'FH': 1, 'FI': 1, 'FJ': 1, 'FK': 1,'FL': 1, 'FM': 1, 'FN': 1,
-                    'FO': 1, 'FP': 1, 'FQ': 1, 'FR': 1, 'FS': 1,'FT': 1, 'FU': 1, 'FV': 1,
-                    'FW': 1, 'FX': 1, 'FY': 1, 'FZ': 1,
-                    'GA': 1, 'GB': 1, 'GC': 1, 'GD': 1,'GE': 1, 'GF': 1,
-                    'GG': 1, 'GH': 1, 'GI': 1, 'GJ': 1, 'GK': 1,'GL': 1, 'GM': 1, 'GN': 1,
-                    'GO': 1, 'GP': 1, 'GQ': 1, 'GR': 1, 'GS': 1,'GT': 1, 'GU': 1, 'GV': 1,
-                    'GW': 1, 'GX': 1, 'GY': 1, 'GZ': 1,
-                    'HA': 1, 'HB': 1, 'HC': 1, 'HD': 1,'HE': 1, 'HF': 1,
-                    'HG': 1, 'HH': 1, 'HI': 1, 'HJ': 1, 'HK': 1,'HL': 1, 'HM': 1, 'HN': 1,
-                    'HO': 1, 'HP': 1, 'HQ': 1, 'HR': 1, 'HS': 1,'HT': 1, 'HU': 1, 'HV': 1,
-                    'HW': 1, 'HX': 1, 'HY': 1, 'HZ': 1,
-                    'IA': 1, 'IB': 1, 'IC': 1, 'ID': 1,'IE': 1, 'IF': 1,
-                    'IG': 1, 'IH': 1, 'II': 1, 'IJ': 1, 'IK': 1,'IL': 1, 'IM': 1, 'IN': 1,
-                    'IO': 1, 'IP': 1, 'IQ': 1, 'IR': 1, 'IS': 1,'IT': 1, 'IU': 1, 'IV': 1,
-                    'IW': 1, 'IX': 1, 'IY': 1, 'IZ': 1,
-                    'JA': 1, 'JB': 1, 'JC': 1, 'JD': 1,'JE': 1, 'JF': 1,
-                    'JG': 1, 'JH': 1, 'JI': 1, 'JJ': 1, 'JK': 1,'JL': 1, 'JM': 1, 'JN': 1,
-                    'JO': 1, 'JP': 1, 'JQ': 1, 'JR': 1, 'JS': 1,'JT': 1, 'JU': 1, 'JV': 1,
-                    'JW': 1, 'JX': 1, 'JY': 1, 'JZ': 1,
-                    'KA': 1, 'KB': 1, 'KC': 1, 'KD': 1,'KE': 1, 'KF': 1,
-                    'KG': 1, 'KH': 1, 'KI': 1, 'KJ': 1, 'KK': 1,'KL': 1, 'KM': 1, 'KN': 1,
-                    'KO': 1, 'KP': 1, 'KQ': 1, 'KR': 1, 'KS': 1,'KT': 1, 'KU': 1, 'KV': 1,
-                    'KW': 1, 'KX': 1, 'KY': 1, 'KZ': 1,
-                    'LA': 1, 'LB': 1, 'LC': 1, 'LD': 1,'LE': 1, 'LF': 1,
-                    'LG': 1, 'LH': 1, 'LI': 1, 'LJ': 1, 'LK': 1,'LL': 1, 'LM': 1, 'LN': 1,
-                    'LO': 1, 'LP': 1, 'LQ': 1, 'LR': 1, 'LS': 1,'LT': 1, 'LU': 1, 'LV': 1,
-                    'LW': 1, 'LX': 1, 'LY': 1, 'LZ': 1,
-                    'MA': 1, 'MB': 1, 'MC': 1, 'MD': 1,'ME': 1, 'MF': 1,
-                    'MG': 1, 'MH': 1, 'MI': 1, 'MJ': 1, 'MK': 1,'ML': 1, 'MM': 1, 'MN': 1,
-                    'MO': 1, 'MP': 1, 'MQ': 1, 'MR': 1, 'MS': 1,'MT': 1, 'MU': 1, 'MV': 1,
-                    'MW': 1, 'MX': 1, 'MY': 1, 'MZ': 1,
-                    'NA': 1, 'NB': 1, 'NC': 1, 'ND': 1,'NE': 1, 'NF': 1,
-                    'NG': 1, 'NH': 1, 'NI': 1, 'NJ': 1, 'NK': 1,'NL': 1, 'NM': 1, 'NN': 1,
-                    'NO': 1, 'NP': 1, 'NQ': 1, 'NR': 1, 'NS': 1,'NT': 1, 'NU': 1, 'NV': 1,
-                    'NW': 1, 'NX': 1, 'NY': 1, 'NZ': 1,
-                    'OA': 1, 'OB': 1, 'OC': 1, 'OD': 1,'OE': 1, 'OF': 1,
-                    'OG': 1, 'OH': 1, 'OI': 1, 'OJ': 1, 'OK': 1,'OL': 1, 'OM': 1, 'ON': 1,
-                    'OO': 1, 'OP': 1, 'OQ': 1, 'OR': 1, 'OS': 1,'OT': 1, 'OU': 1, 'OV': 1,
-                    'OW': 1, 'OX': 1, 'OY': 1, 'OZ': 1,
-                    'PA': 1, 'PB': 1, 'PC': 1, 'PD': 1,'PE': 1, 'PF': 1,
-                    'PG': 1, 'PH': 1, 'PI': 1, 'PJ': 1, 'PK': 1,'PL': 1, 'PM': 1, 'PN': 1,
-                    'PO': 1, 'PP': 1, 'PQ': 1, 'PR': 1, 'PS': 1,'PT': 1, 'PU': 1, 'PV': 1,
-                    'PW': 1, 'PX': 1, 'PY': 1, 'PZ': 1,
-                    'QA': 1, 'QB': 1, 'QC': 1, 'QD': 1,'QE': 1, 'QF': 1,
-                    'QG': 1, 'QH': 1, 'QI': 1, 'QJ': 1, 'QK': 1,'QL': 1, 'QM': 1, 'QN': 1,
-                    'QO': 1, 'QP': 1, 'QQ': 1, 'QR': 1, 'QS': 1,'QT': 1, 'QU': 1, 'QV': 1,
-                    'QW': 1, 'QX': 1, 'QY': 1, 'QZ': 1,
-                    'RA': 1, 'RB': 1, 'RC': 1, 'RD': 1,'RE': 1, 'RF': 1,
-                    'RG': 1, 'RH': 1, 'RI': 1, 'RJ': 1, 'RK': 1,'RL': 1, 'RM': 1, 'RN': 1,
-                    'RO': 1, 'RP': 1, 'RQ': 1, 'RR': 1, 'RS': 1,'RT': 1, 'RU': 1, 'RV': 1,
-                    'RW': 1, 'RX': 1, 'RY': 1, 'RZ': 1,
-                    'SA': 1, 'SB': 1, 'SC': 1, 'SD': 1,'SE': 1, 'SF': 1,
-                    'SG': 1, 'SH': 1, 'SI': 1, 'SJ': 1, 'SK': 1,'SL': 1, 'SM': 1, 'SN': 1,
-                    'SO': 1, 'SP': 1, 'SQ': 1, 'SR': 1, 'SS': 1,'ST': 1, 'SU': 1, 'SV': 1,
-                    'SW': 1, 'SX': 1, 'SY': 1, 'SZ': 1,
-                    'TA': 1, 'TB': 1, 'TC': 1, 'TD': 1,'TE': 1, 'TF': 1,
-                    'TG': 1, 'TH': 1, 'TI': 1, 'TJ': 1, 'TK': 1,'TL': 1, 'TM': 1, 'TN': 1,
-                    'TO': 1, 'TP': 1, 'TQ': 1, 'TR': 1, 'TS': 1,'TT': 1, 'TU': 1, 'TV': 1,
-                    'TW': 1, 'TX': 1, 'TY': 1, 'TZ': 1}
+        column_width = {'A': 0.4, 'B': 0.4, 'C': 0.4, 'D': 0.4, 'E': 0.4,'F': 0.4, 'G': 0.4, 'H': 0.4,
+                    'I': 0.4, 'J': 0.4, 'K': 0.4, 'L': 0.4, 'M': 0.4,'N': 0.4, 'O': 0.4, 'P': 0.4,
+                    'Q': 0.4, 'R': 0.4, 'S': 0.4, 'T': 0.4, 'U': 0.4,'V': 0.4, 'W': 0.4, 'X': 0.4,
+                    'Y': 0.4, 'Z': 0.4, 'AA': 0.4, 'AB': 0.4, 'AC': 0.4,'AD': 0.4, 'AE': 0.4, 'AF': 0.4,
+                    'AG': 0.4, 'AH': 0.4, 'AI': 0.4, 'AJ': 0.4, 'AK': 0.4,'AL': 0.4, 'AM': 0.4, 'AN': 0.4,
+                    'AO': 0.4, 'AP': 0.4, 'AQ': 0.4, 'AR': 0.4, 'AS': 0.4,'AT': 0.4, 'AU': 0.4, 'AV': 0.4,
+                    'AW': 0.4, 'AX': 0.4, 'AY': 0.4, 'AZ': 0.4,
+                    'BA': 0.4, 'BB': 0.4, 'BC': 0.4, 'BD': 0.4,'BE': 0.4, 'BF': 0.4,
+                    'BG': 0.4, 'BH': 0.4, 'BI': 0.4, 'BJ': 0.4, 'BK': 0.4,'BL': 0.4, 'BM': 0.4, 'BN': 0.4,
+                    'BO': 0.4, 'BP': 0.4, 'BQ': 0.4, 'BR': 0.4, 'BS': 0.4,'BT': 0.4, 'BU': 0.4, 'BV': 0.4,
+                    'BW': 0.4, 'BX': 0.4, 'BY': 0.4, 'BZ': 0.4,
+                    'CA': 0.4, 'CB': 0.4, 'CC': 0.4, 'CD': 0.4,'CE': 0.4, 'CF': 0.4,
+                    'CG': 0.4, 'CH': 0.4, 'CI': 0.4, 'CJ': 0.4, 'CK': 0.4,'CL': 0.4, 'CM': 0.4, 'CN': 0.4,
+                    'CO': 0.4, 'CP': 0.4, 'CQ': 0.4, 'CR': 0.4, 'CS': 0.4,'CT': 0.4, 'CU': 0.4, 'CV': 0.4,
+                    'CW': 0.4, 'CX': 0.4, 'CY': 0.4, 'CZ': 0.4,
+                    'DA': 0.4, 'DB': 0.4, 'DC': 0.4, 'DD': 0.4,'DE': 0.4, 'DF': 0.4,
+                    'DG': 0.4, 'DH': 0.4, 'DI': 0.4, 'DJ': 0.4, 'DK': 0.4,'DL': 0.4, 'DM': 0.4, 'DN': 0.4,
+                    'DO': 0.4, 'DP': 0.4, 'DQ': 0.4, 'DR': 0.4, 'DS': 0.4,'DT': 0.4, 'DU': 0.4, 'DV': 0.4,
+                    'DW': 0.4, 'DX': 0.4, 'DY': 0.4, 'DZ': 0.4,  
+                    'EA': 0.4, 'EB': 0.4, 'EC': 0.4, 'ED': 0.4,'EE': 0.4, 'EF': 0.4,
+                    'EG': 0.4, 'EH': 0.4, 'EI': 0.4, 'EJ': 0.4, 'EK': 0.4,'EL': 0.4, 'EM': 0.4, 'EN': 0.4,
+                    'EO': 0.4, 'EP': 0.4, 'EQ': 0.4, 'ER': 0.4, 'ES': 0.4,'ET': 0.4, 'EU': 0.4, 'EV': 0.4,
+                    'EW': 0.4, 'EX': 0.4, 'EY': 0.4, 'EZ': 0.4,
+                    'FA': 0.4, 'FB': 0.4, 'FC': 0.4, 'FD': 0.4,'FE': 0.4, 'FF': 0.4,
+                    'FG': 0.4, 'FH': 0.4, 'FI': 0.4, 'FJ': 0.4, 'FK': 0.4,'FL': 0.4, 'FM': 0.4, 'FN': 0.4,
+                    'FO': 0.4, 'FP': 0.4, 'FQ': 0.4, 'FR': 0.4, 'FS': 0.4,'FT': 0.4, 'FU': 0.4, 'FV': 0.4,
+                    'FW': 0.4, 'FX': 0.4, 'FY': 0.4, 'FZ': 0.4,
+                    'GA': 0.4, 'GB': 0.4, 'GC': 0.4, 'GD': 0.4,'GE': 0.4, 'GF': 0.4,
+                    'GG': 0.4, 'GH': 0.4, 'GI': 0.4, 'GJ': 0.4, 'GK': 0.4,'GL': 0.4, 'GM': 0.4, 'GN': 0.4,
+                    'GO': 0.4, 'GP': 0.4, 'GQ': 0.4, 'GR': 0.4, 'GS': 0.4,'GT': 0.4, 'GU': 0.4, 'GV': 0.4,
+                    'GW': 0.4, 'GX': 0.4, 'GY': 0.4, 'GZ': 0.4,
+                    'HA': 0.4, 'HB': 0.4, 'HC': 0.4, 'HD': 0.4,'HE': 0.4, 'HF': 0.4,
+                    'HG': 0.4, 'HH': 0.4, 'HI': 0.4, 'HJ': 0.4, 'HK': 0.4,'HL': 0.4, 'HM': 0.4, 'HN': 0.4,
+                    'HO': 0.4, 'HP': 0.4, 'HQ': 0.4, 'HR': 0.4, 'HS': 0.4,'HT': 0.4, 'HU': 0.4, 'HV': 0.4,
+                    'HW': 0.4, 'HX': 0.4, 'HY': 0.4, 'HZ': 0.4,
+                    'IA': 0.4, 'IB': 0.4, 'IC': 0.4, 'ID': 0.4,'IE': 0.4, 'IF': 0.4,
+                    'IG': 0.4, 'IH': 0.4, 'II': 0.4, 'IJ': 0.4, 'IK': 0.4,'IL': 0.4, 'IM': 0.4, 'IN': 0.4,
+                    'IO': 0.4, 'IP': 0.4, 'IQ': 0.4, 'IR': 0.4, 'IS': 0.4,'IT': 0.4, 'IU': 0.4, 'IV': 0.4,
+                    'IW': 0.4, 'IX': 0.4, 'IY': 0.4, 'IZ': 0.4,
+                    'JA': 0.4, 'JB': 0.4, 'JC': 0.4, 'JD': 0.4,'JE': 0.4, 'JF': 0.4,
+                    'JG': 0.4, 'JH': 0.4, 'JI': 0.4, 'JJ': 0.4, 'JK': 0.4,'JL': 0.4, 'JM': 0.4, 'JN': 0.4,
+                    'JO': 0.4, 'JP': 0.4, 'JQ': 0.4, 'JR': 0.4, 'JS': 0.4,'JT': 0.4, 'JU': 0.4, 'JV': 0.4,
+                    'JW': 0.4, 'JX': 0.4, 'JY': 0.4, 'JZ': 0.4,
+                    'KA': 0.4, 'KB': 0.4, 'KC': 0.4, 'KD': 0.4,'KE': 0.4, 'KF': 0.4,
+                    'KG': 0.4, 'KH': 0.4, 'KI': 0.4, 'KJ': 0.4, 'KK': 0.4,'KL': 0.4, 'KM': 0.4, 'KN': 0.4,
+                    'KO': 0.4, 'KP': 0.4, 'KQ': 0.4, 'KR': 0.4, 'KS': 0.4,'KT': 0.4, 'KU': 0.4, 'KV': 0.4,
+                    'KW': 0.4, 'KX': 0.4, 'KY': 0.4, 'KZ': 0.4,
+                    'LA': 0.4, 'LB': 0.4, 'LC': 0.4, 'LD': 0.4,'LE': 0.4, 'LF': 0.4,
+                    'LG': 0.4, 'LH': 0.4, 'LI': 0.4, 'LJ': 0.4, 'LK': 0.4,'LL': 0.4, 'LM': 0.4, 'LN': 0.4,
+                    'LO': 0.4, 'LP': 0.4, 'LQ': 0.4, 'LR': 0.4, 'LS': 0.4,'LT': 0.4, 'LU': 0.4, 'LV': 0.4,
+                    'LW': 0.4, 'LX': 0.4, 'LY': 0.4, 'LZ': 0.4,
+                    'MA': 0.4, 'MB': 0.4, 'MC': 0.4, 'MD': 0.4,'ME': 0.4, 'MF': 0.4,
+                    'MG': 0.4, 'MH': 0.4, 'MI': 0.4, 'MJ': 0.4, 'MK': 0.4,'ML': 0.4, 'MM': 0.4, 'MN': 0.4,
+                    'MO': 0.4, 'MP': 0.4, 'MQ': 0.4, 'MR': 0.4, 'MS': 0.4,'MT': 0.4, 'MU': 0.4, 'MV': 0.4,
+                    'MW': 0.4, 'MX': 0.4, 'MY': 0.4, 'MZ': 0.4,
+                    'NA': 0.4, 'NB': 0.4, 'NC': 0.4, 'ND': 0.4,'NE': 0.4, 'NF': 0.4,
+                    'NG': 0.4, 'NH': 0.4, 'NI': 0.4, 'NJ': 0.4, 'NK': 0.4,'NL': 0.4, 'NM': 0.4, 'NN': 0.4,
+                    'NO': 0.4, 'NP': 0.4, 'NQ': 0.4, 'NR': 0.4, 'NS': 0.4,'NT': 0.4, 'NU': 0.4, 'NV': 0.4,
+                    'NW': 0.4, 'NX': 0.4, 'NY': 0.4, 'NZ': 0.4,
+                    'OA': 0.4, 'OB': 0.4, 'OC': 0.4, 'OD': 0.4,'OE': 0.4, 'OF': 0.4,
+                    'OG': 0.4, 'OH': 0.4, 'OI': 0.4, 'OJ': 0.4, 'OK': 0.4,'OL': 0.4, 'OM': 0.4, 'ON': 0.4,
+                    'OO': 0.4, 'OP': 0.4, 'OQ': 0.4, 'OR': 0.4, 'OS': 0.4,'OT': 0.4, 'OU': 0.4, 'OV': 0.4,
+                    'OW': 0.4, 'OX': 0.4, 'OY': 0.4, 'OZ': 0.4,
+                    'PA': 0.4, 'PB': 0.4, 'PC': 0.4, 'PD': 0.4,'PE': 0.4, 'PF': 0.4,
+                    'PG': 0.4, 'PH': 0.4, 'PI': 0.4, 'PJ': 0.4, 'PK': 0.4,'PL': 0.4, 'PM': 0.4, 'PN': 0.4,
+                    'PO': 0.4, 'PP': 0.4, 'PQ': 0.4, 'PR': 0.4, 'PS': 0.4,'PT': 0.4, 'PU': 0.4, 'PV': 0.4,
+                    'PW': 0.4, 'PX': 0.4, 'PY': 0.4, 'PZ': 0.4,
+                    'QA': 0.4, 'QB': 0.4, 'QC': 0.4, 'QD': 0.4,'QE': 0.4, 'QF': 0.4,
+                    'QG': 0.4, 'QH': 0.4, 'QI': 0.4, 'QJ': 0.4, 'QK': 0.4,'QL': 0.4, 'QM': 0.4, 'QN': 0.4,
+                    'QO': 0.4, 'QP': 0.4, 'QQ': 0.4, 'QR': 0.4, 'QS': 0.4,'QT': 0.4, 'QU': 0.4, 'QV': 0.4,
+                    'QW': 0.4, 'QX': 0.4, 'QY': 0.4, 'QZ': 0.4,
+                    'RA': 0.4, 'RB': 0.4, 'RC': 0.4, 'RD': 0.4,'RE': 0.4, 'RF': 0.4,
+                    'RG': 0.4, 'RH': 0.4, 'RI': 0.4, 'RJ': 0.4, 'RK': 0.4,'RL': 0.4, 'RM': 0.4, 'RN': 0.4,
+                    'RO': 0.4, 'RP': 0.4, 'RQ': 0.4, 'RR': 0.4, 'RS': 0.4,'RT': 0.4, 'RU': 0.4, 'RV': 0.4,
+                    'RW': 0.4, 'RX': 0.4, 'RY': 0.4, 'RZ': 0.4,
+                    'SA': 0.4, 'SB': 0.4, 'SC': 0.4, 'SD': 0.4,'SE': 0.4, 'SF': 0.4,
+                    'SG': 0.4, 'SH': 0.4, 'SI': 0.4, 'SJ': 0.4, 'SK': 0.4,'SL': 0.4, 'SM': 0.4, 'SN': 0.4,
+                    'SO': 0.4, 'SP': 0.4, 'SQ': 0.4, 'SR': 0.4, 'SS': 0.4,'ST': 0.4, 'SU': 0.4, 'SV': 0.4,
+                    'SW': 0.4, 'SX': 0.4, 'SY': 0.4, 'SZ': 0.4,
+                    'TA': 0.4, 'TB': 0.4, 'TC': 0.4, 'TD': 0.4,'TE': 0.4, 'TF': 0.4,
+                    'TG': 0.4, 'TH': 0.4, 'TI': 0.4, 'TJ': 0.4, 'TK': 0.4,'TL': 0.4, 'TM': 0.4, 'TN': 0.4,
+                    'TO': 0.4, 'TP': 0.4, 'TQ': 0.4, 'TR': 0.4, 'TS': 0.4,'TT': 0.4, 'TU': 0.4, 'TV': 0.4,
+                    'TW': 0.4, 'TX': 0.4, 'TY': 0.4, 'TZ': 0.4}
 
+
+ 
         for col, width in column_width.items():
             ws.column_dimensions[col].width = width
+
+        for shi in range(1,200):
+            ws.row_dimensions[shi].height = 2
+        keysDict = list(column_width.keys())
 
     if charclysv != clsElm[11]:
         if len(charstr) > 0: 
             ws.cell(row=rowidy, column=colidx).value = charstr
-            ws.cell(row=rowidy, column=colidx).alignment = Alignment(vertical='top')  
+            ws.cell(row=rowidy, column=colidx).alignment = Alignment(vertical='center')  
+            dicidx = keysDict[colidx + 1]
+            ws.column_dimensions[dicidx].width = 1
+            ws.row_dimensions[rowidy].height = 25
         charstr = ""
         charclysv = clsElm[11]
         charclxsv = clsElm[12]
@@ -817,14 +846,16 @@ for clsElm in xerai:
         if charclxsv != clsElm[12]:
             if len(charstr) > 0: 
                 ws.cell(row=rowidy, column=colidx).value = charstr
-                ws.cell(row=rowidy, column=colidx).alignment = Alignment(vertical='top')
+                ws.cell(row=rowidy, column=colidx).alignment = Alignment(vertical='center')
+                dicidx = keysDict[colidx + 1]
+                ws.column_dimensions[dicidx].width = 1
+                ws.row_dimensions[rowidy].height = 25
             charstr = ""
             charclxsv = clsElm[12]
             colidx = int(int(clsElm[5] / 10)) + 1
     
     #rowidy = int(clsElm[11]) * 2 + 1
-    rowidy = int(int(clsElm[6] / 25)) + 1
-    ws.row_dimensions[rowidy].height = 20
+    rowidy = int(int(clsElm[6] / 45)) + 1
 
     if str(clsElm[2]) == "MinusMinus":
         char = "-"

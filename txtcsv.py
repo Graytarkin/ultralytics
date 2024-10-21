@@ -3,17 +3,17 @@ import yaml
 import glob
 import os
 
-csv_path1 = "C:/PylocalYolo/yolov5/data/mmletter/images/casestep5/"
+csv_path1 = "C:/yolo/AI-Pred-Data/step5/"
 csv_path2 = "predictions.csv"
 csv_path = csv_path1 + csv_path2
 
-with open('C:/PylocalYolo/yolov5/data/mmletter.yaml', 'r', encoding="utf-8") as yml:
+with open('C:/yolo/ultralytics/mmletter.yaml', 'r', encoding="utf-8") as yml:
     config = yaml.safe_load(yml)
 
 dicyaml = config['names']
 
 #filesp = glob.glob("C:/PylocalYolo/yolov5/runs/detect/exp/labels" + "/*.txt", recursive=True)
-filesp = glob.glob("C:/PylocalYolo/yolov5/runs/detect/exp15/labels" + "/*.txt", recursive=True)
+filesp = glob.glob("C:/yolo/ultralytics/runs/detect/predict/labels" + "/*.txt", recursive=True)
 
 wa = "w"
 for file in filesp:
@@ -36,6 +36,7 @@ for file in filesp:
             with open(csv_path, mode=wa, newline="", encoding="utf-8") as f:
                 writer = csv.DictWriter(f, fieldnames=data.keys())
                 if wa == "w":
-                    writer.writeheader()
-                writer.writerow(data)
-                wa = "a"
+                    writer.writerow(data)
+                    wa = "a"
+                else:
+                    writer.writerow(data)
