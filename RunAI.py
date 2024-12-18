@@ -6,7 +6,7 @@ proc = subprocess.Popen(runPath)
 result = proc.communicate() 
 print("Prepared Floders")
 
-command = ["python.exe", "ultralytics/detectes11png.py"]
+command = ["python.exe", "ultralytics/detectes11pngx.py"]
 proc = subprocess.Popen(command)  #->コマンドが実行される(処理の終了は待たない)
 result = proc.communicate()  #->終了を待つ
 print("png-images prepared")
@@ -21,7 +21,8 @@ proc = subprocess.Popen(command3)
 result = proc.communicate() 
 print("sub-images cropped")
 
-model = YOLO("ultralytics/beste200.pt")
+#model = YOLO("ultralytics/beste200.pt")
+model = YOLO("ultralytics/bestse100.pt")
 # --save-txt --save-csv --line-thickness 1 --hide-labels --conf 0.20
 results = model("C:/yolo/AI-Pred-Data/step2/",save=True,save_txt=True,save_conf=True,show_labels=False,show_conf=False,line_width=1)
 
@@ -30,7 +31,7 @@ proc = subprocess.Popen(command4)
 result = proc.communicate() 
 print("org-images pred")
 
-command5 = ["python.exe", "ultralytics/concyolyp11.py"]
+command5 = ["python.exe", "ultralytics/concyolypx11.py"]
 proc = subprocess.Popen(command5)  
 result = proc.communicate() 
 print("sub-images pred")

@@ -738,7 +738,7 @@ for clsElm in xerai:
         ws = wb.active          
         exOutNmsv = exOutNm
 
-        column_width = {'A': 0.4, 'B': 0.4, 'C': 0.4, 'D': 0.4, 'E': 0.4,'F': 0.4, 'G': 0.4, 'H': 0.4,
+        column_width = {'A': 2, 'B': 0.4, 'C': 0.4, 'D': 0.4, 'E': 0.4,'F': 0.4, 'G': 0.4, 'H': 0.4,
                     'I': 0.4, 'J': 0.4, 'K': 0.4, 'L': 0.4, 'M': 0.4,'N': 0.4, 'O': 0.4, 'P': 0.4,
                     'Q': 0.4, 'R': 0.4, 'S': 0.4, 'T': 0.4, 'U': 0.4,'V': 0.4, 'W': 0.4, 'X': 0.4,
                     'Y': 0.4, 'Z': 0.4, 'AA': 0.4, 'AB': 0.4, 'AC': 0.4,'AD': 0.4, 'AE': 0.4, 'AF': 0.4,
@@ -827,13 +827,14 @@ for clsElm in xerai:
         for col, width in column_width.items():
             ws.column_dimensions[col].width = width
 
-        for shi in range(1,200):
+        for shi in range(2,200):
             ws.row_dimensions[shi].height = 2
         keysDict = list(column_width.keys())
 
     if charclysv != clsElm[11]:
         if len(charstr) > 0: 
             ws.cell(row=rowidy, column=colidx).value = charstr
+            ws.cell(row=rowidy, column=1).value = "a"
             ws.cell(row=rowidy, column=colidx).alignment = Alignment(vertical='center')  
             dicidx = keysDict[colidx + 1]
             ws.column_dimensions[dicidx].width = 1
@@ -846,6 +847,12 @@ for clsElm in xerai:
         if charclxsv != clsElm[12]:
             if len(charstr) > 0: 
                 ws.cell(row=rowidy, column=colidx).value = charstr
+                ws.cell(row=rowidy, column=1).value = "a"
+                if (2 - column < 1):
+                    wkcolumn = 1
+                else:
+                    wkcolumn = column - 2
+                ws.cell(row=rowidy, column=wkcolumn).value = "!"
                 ws.cell(row=rowidy, column=colidx).alignment = Alignment(vertical='center')
                 dicidx = keysDict[colidx + 1]
                 ws.column_dimensions[dicidx].width = 1
@@ -861,7 +868,7 @@ for clsElm in xerai:
         char = "-"
     else:
         if str(clsElm[2]) == "DotDot":
-            char = "."
+            char = "!"
         else:
             char = str(clsElm[2])
     charstr = charstr + char

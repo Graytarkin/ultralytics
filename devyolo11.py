@@ -19,13 +19,13 @@ for file in files:
     img = cv2.imread(file)
 
     ohight, owidth, oColorimg = img.shape
-    if ohight < 1000 or owidth < 1000:
+    if ohight < 2000 or owidth < 3000:
         result = cv2.resize(img, (owidth * 2, ohight * 2)) 
         img = result
         ohight, owidth, oColorimg = img.shape 
         
-    if ohight < 1000 or owidth < 1000:
-        result = cv2.resize(img, (owidth * 2, ohight * 2)) 
+    if ohight < 2000 or owidth < 3000:
+        result = cv2.resize(img, (owidth * 1.5, ohight * 1.5)) 
         img = result
         ohight, owidth, oColorimg = img.shape 
 
