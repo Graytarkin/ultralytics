@@ -4,16 +4,27 @@ import glob
 import hdbscan
 import heapq
 import numpy as np
+import pandas as pd
 from io import BytesIO
 from sklearn.neighbors import KernelDensity
 from scipy.signal import argrelextrema
 from PIL import Image as Imgpl
+from shapely.geometry import Point, Polygon
 # from openpyxl import load_workbook
 from openpyxl import Workbook
 from openpyxl.styles import Alignment
 from openpyxl.drawing.image import Image as Imgxl
 
 dirOfPredx = "C:/yolo/AI-Pred-Data/step6/"
+
+df = pd.read_excel("C:/workspace/step5backRT2/bigRect.xlsx", header=None, index_col=None)
+itr = np.nditer(df.values)
+tmp_list = []
+for v in itr:
+    tmp_list.append(v)
+print(tmp_list[1])
+print(tmp_list[10])
+print(tmp_list[100])
 
 # 各クラスタリングアルゴリズムの設定
 algorithms = [3,4,5,6,7,8]
@@ -699,37 +710,74 @@ for i in range(1,len(sdp)):
 
 sspt = sorted(xerai, key=lambda x:(x[0],x[11],x[5])) 
 
-#print(xerai)  
-
 wbt = Workbook()
 wst = wbt.active
-for i in range(0,len(xerai)):
-  j = i + 2
-  wst.cell(row=j, column=2).value = xerai[i][0]
-  wst.cell(row=j, column=3).value = xerai[i][1]
-  wst.cell(row=j, column=4).value = xerai[i][2]
-  wst.cell(row=j, column=5).value = xerai[i][3]
-  wst.cell(row=j, column=6).value = xerai[i][4]
-  wst.cell(row=j, column=7).value = xerai[i][5]
-  wst.cell(row=j, column=8).value = xerai[i][6]
-  wst.cell(row=j, column=9).value = xerai[i][7]
-  wst.cell(row=j, column=10).value = xerai[i][8]
-  wst.cell(row=j, column=11).value = xerai[i][9]
-  wst.cell(row=j, column=12).value = xerai[i][10]
-  wst.cell(row=j, column=13).value = xerai[i][11]
-  wst.cell(row=j, column=14).value = xerai[i][12]
-wbt.save(dirOfPredx + "exNameerai" + ".xlsx") 
+fnameSprsv = ""
+xera = []
+
+for i in range(0,len(sspt)):
+    fnameSpr = sspt[i][0]
+    if fnameSprsv != fnameSpr:
+        tmplistsel = list(filter(lambda x: tmp_list[x][0] == fnameSpr, tmp_list))
+#        tmplistsel = [i for i in tmp_list if mp_list[i][0] == fnameSpr]
+        print("len tmp_listsel",len(tmplistsel))
+    findSpr = 0
+    for idxl in range(0,len(tmplistsel)):
+        # 4つの点を定義
+        p1 = (tmplistsel[idxl][1], tmplistsel[idxl][2])
+        p2 = (tmplistsel[idxl][3], tmplistsel[idxl][4])
+        p3 = (tmplistsel[idxl][5], tmplistsel[idxl][6])
+        p4 = (tmplistsel[idxl][7], tmplistsel[idxl][8])
+        px = tmplistsel[idxl][9]
+        minx = min(tmplistsel[idxl][1],tmplistsel[idxl][3],tmplistsel[idxl][5],tmplistsel[idxl][7])
+        miny = min(tmplistsel[idxl][2],tmplistsel[idxl][4],tmplistsel[idxl][6],tmplistsel[idxl][8])
+        # 多角形を定義
+        polygon = Polygon([p1, p2, p3, p4])
+        xc = sspt[i][5]
+        yc = sspt[i][6]
+        point = Point((xc,yc))
+        if polygon.contains(point):
+            findSpr = px
+            break
+    if findSpr == 0:
+        minx = xc
+        miny = yc
+    xeraSpr = [sspt[i][0],sspt[i][1],sspt[i][2],sspt[i][3],sspt[i][4],sspt[i][5],sspt[i][6],
+               sspt[i][7],sspt[i][8],sspt[i][9],sspt[i][10],sspt[i][11],sspt[i][12],findSpr,minx,miny]
+    xera.append(xeraSpr)
+    j = i + 2
+    wst.cell(row=j, column=2).value = xerai[i][0]
+    wst.cell(row=j, column=3).value = xerai[i][1]
+    wst.cell(row=j, column=4).value = xerai[i][2]
+    wst.cell(row=j, column=5).value = xerai[i][3]
+    wst.cell(row=j, column=6).value = xerai[i][4]
+    wst.cell(row=j, column=7).value = xerai[i][5]
+    wst.cell(row=j, column=8).value = xerai[i][6]
+    wst.cell(row=j, column=9).value = xerai[i][7]
+    wst.cell(row=j, column=10).value = xerai[i][8]
+    wst.cell(row=j, column=11).value = xerai[i][9]
+    wst.cell(row=j, column=12).value = xerai[i][10]
+    wst.cell(row=j, column=13).value = xerai[i][11]
+    wst.cell(row=j, column=14).value = xerai[i][12]
+    wst.cell(row=j, column=15).value = findSpr
+    wst.cell(row=j, column=15).value = minx
+    wst.cell(row=j, column=15).value = miny
+
+wbt.save(dirOfPredx + "exNameBigg" + ".xlsx") 
+
+sera = sorted(xera, key=lambda x:(x[0],x[13],x[11],x[5])) 
 
 exOutNmsv = ""
 rowidysv = 0
 colidxsv = 0
+charclcsv = 0
 charclxsv = 0
 charclysv = 0
 ratesv = 0
 writeCnt = 0
 charstr = ""
 
-for clsElm in xerai:  
+for clsElm in sera:  
     exOutNm = clsElm[0]
     if exOutNmsv != exOutNm:
         if exOutNmsv != "":
@@ -831,33 +879,44 @@ for clsElm in xerai:
             ws.row_dimensions[shi].height = 2
         keysDict = list(column_width.keys())
 
-    if charclysv != clsElm[11]:
-        if len(charstr) > 0: 
-            ws.cell(row=rowidy, column=1).value = "a"
-            ws.cell(row=rowidy, column=colidx).value = charstr
-            ws.cell(row=rowidy, column=colidx).alignment = Alignment(vertical='center')  
-            dicidx = keysDict[colidx + 1]
-            ws.column_dimensions[dicidx].width = 1
-            ws.row_dimensions[rowidy].height = 25
+    if (charclcsv != clsElm[13]) or (clsElm[13] == 0):
+        if clsElm[13] != 0:
+            colidx = int(int(clsElm[14] / 10)) + 1
+            rowidy = int(int(clsElm[15] / 45)) + 1
+        else:
+            colidx = int(int(clsElm[5] / 10)) + 1
+            rowidy = int(int(clsElm[6] / 45)) + 1            
+        charclcsv = clsElm[13]
         charstr = ""
-        charclysv = clsElm[11]
-        charclxsv = clsElm[12]
-        colidx = int(int(clsElm[5] / 10)) + 1
-    else:
-        if charclxsv != clsElm[12]:
-            if len(charstr) > 0:
-                ws.cell(row=1, column=colidx).value = "a" 
+#        charclysv = clsElm[11]
+#        charclxsv = clsElm[12]
+        if charclysv != clsElm[11]:
+            if len(charstr) > 0: 
+                ws.cell(row=rowidy, column=1).value = "a"
                 ws.cell(row=rowidy, column=colidx).value = charstr
-                ws.cell(row=rowidy, column=colidx).alignment = Alignment(vertical='center')
+                ws.cell(row=rowidy, column=colidx).alignment = Alignment(vertical='center')  
                 dicidx = keysDict[colidx + 1]
                 ws.column_dimensions[dicidx].width = 1
                 ws.row_dimensions[rowidy].height = 25
-            charstr = ""
+            charstr = charstr + " "
+            charclysv = clsElm[11]
             charclxsv = clsElm[12]
-            colidx = int(int(clsElm[5] / 10)) + 1
+#            colidx = int(int(clsElm[5] / 10)) + 1
+        else:
+            if charclxsv != clsElm[12]:
+                if len(charstr) > 0:
+                    ws.cell(row=1, column=colidx).value = "a" 
+                    ws.cell(row=rowidy, column=colidx).value = charstr
+                    ws.cell(row=rowidy, column=colidx).alignment = Alignment(vertical='center')
+                    dicidx = keysDict[colidx + 1]
+                    ws.column_dimensions[dicidx].width = 1
+                    ws.row_dimensions[rowidy].height = 25
+                charstr = charstr + " "
+                charclxsv = clsElm[12]
+#                colidx = int(int(clsElm[5] / 10)) + 1
     
     #rowidy = int(clsElm[11]) * 2 + 1
-    rowidy = int(int(clsElm[6] / 45)) + 1
+#    rowidy = int(int(clsElm[6] / 45)) + 1
 
     if str(clsElm[2]) == "MinusMinus":
         char = "-"
@@ -868,4 +927,4 @@ for clsElm in xerai:
             char = str(clsElm[2])
     charstr = charstr + char
 
-wb.save(dirOfPredx + exOutNmsv + ".xlsx")      
+wb.save(dirOfPredx + exOutNmsv + ".xlsx")       

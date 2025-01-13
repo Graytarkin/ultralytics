@@ -6,9 +6,9 @@ import random
 import matplotlib.pyplot as plt
 #%matplotlib inline
 
-files = glob.glob("C:/workspace/yolowork/nextbatterbox" + "/*.jpeg", recursive=True)
-input_dir = "C:/workspace/yolowork/nextbatterbox"
-output_dir = "C:/workspace/yolowork/batterbox"
+files = glob.glob("C:/workspace/yolo/addmore-weak2" + "/*.jpg", recursive=True)
+# input_dir = "C:/workspace/yolowork/nextbatterbox"
+output_dir = "C:/workspace/yolo/addmore-weakttl"
 
 for file in files:
 
