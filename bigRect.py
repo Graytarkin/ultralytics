@@ -6,8 +6,8 @@ import numpy as np
 
 ## Good !!
 
-files = glob.glob("C:/workspace/step5back" + '/*.jpeg', recursive=True)
-dir_path = "C:/workspace/step5backRT2/"
+files = glob.glob("C:/yolo/AI-Pred-Data/step5" + '/*.jpeg', recursive=True)
+dir_path = "C:/yolo/AI-Pred-Data/step5/"
 
 wb = Workbook()
 ws = wb.active

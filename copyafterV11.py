@@ -17,7 +17,7 @@ from openpyxl.drawing.image import Image as Imgxl
 
 dirOfPredx = "C:/yolo/AI-Pred-Data/step6/"
 
-df = pd.read_excel("C:/workspace/step5backRT2/bigRect.xlsx", header=None, index_col=None)
+df = pd.read_excel("C:/yolo/AI-Pred-Data/step5/bigRect.xlsx", header=None, index_col=None)
 itr = np.nditer(df.values)
 tmp_list = []
 for v in itr:

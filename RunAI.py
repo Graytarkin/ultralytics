@@ -46,7 +46,12 @@ proc = subprocess.Popen(command7)
 result = proc.communicate() 
 print("txtcsv Pi Bi")
 
-command8 = ["python.exe", "ultralytics/copyafterU11.py"]
+command8 = ["python.exe", "ultralytics/bigRect.py"]
 proc = subprocess.Popen(command8)  
+result = proc.communicate() 
+print("Pi Bi")
+
+command9 = ["python.exe", "ultralytics/copyafterV11.py"]
+proc = subprocess.Popen(command9)  
 result = proc.communicate() 
 print("Pi Bi")
