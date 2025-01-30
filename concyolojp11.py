@@ -11,7 +11,8 @@ for file in files:
 
     filename = os.path.basename(file)
     img = cv2.imread(file, cv2.IMREAD_UNCHANGED)
-    ohight, owidth, oColorimg = img.shape
+    ohight, owidth = img.shape    
+#    ohight, owidth, oColorimg = img.shape
     filenameXPos = filename.rfind("PMX")
     filenameYPos = filename.rfind("MY")
     filenameEPos = filename.rfind("--")

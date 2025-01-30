@@ -10,21 +10,22 @@ from sklearn.neighbors import KernelDensity
 from scipy.signal import argrelextrema
 from PIL import Image as Imgpl
 from shapely.geometry import Point, Polygon
-# from openpyxl import load_workbook
+#from openpyxl import load_workbook
 from openpyxl import Workbook
 from openpyxl.styles import Alignment
 from openpyxl.drawing.image import Image as Imgxl
 
 dirOfPredx = "C:/yolo/AI-Pred-Data/step6/"
 
+#pandas
 df = pd.read_excel("C:/yolo/AI-Pred-Data/step5/bigRect.xlsx", header=None, index_col=None)
-itr = np.nditer(df.values)
 tmp_list = []
-for v in itr:
-    tmp_list.append(v)
-print(tmp_list[1])
-print(tmp_list[10])
-print(tmp_list[100])
+for row in df.values:
+    pdlistElm = [row[0],row[1],row[2],row[3],row[4],row[5],row[6],row[7],row[8],row[9],row[10]]
+    print(row[0],row[1],row) 
+    tmp_list.append(pdlistElm)
+stmp_list = sorted(tmp_list, key=lambda x:(x[0], x[10]))
+print(stmp_list[100])
 
 # 各クラスタリングアルゴリズムの設定
 algorithms = [3,4,5,6,7,8]
@@ -47,7 +48,8 @@ for listl in lst:
     if listl[0][:dotPos] != saveF:
         saveF = listl[0][:dotPos]
         textCnt = 0
-        with open("C:/yolo/runs/detect/predict/labels/" + saveF + ".txt", "r", encoding="utf-8") as f:
+#        C:\yolo\ultralytics\runs\detect\predict\labels
+        with open("C:/yolo/ultralytics/runs/detect/predict/labels/" + saveF + ".txt", "r", encoding="utf-8") as f:
             listtxt = f.readlines()
             listtxtS = []
             for listelm in listtxt:
@@ -61,7 +63,7 @@ for listl in lst:
         posfnameE = listl[0].rfind("-N")
         fname = listl[0][:posfnameE]
 
-#YOLOv11
+#YOLOv11    0#fnmae   1#Char      2#Percent              3#CharCls          4#CharPosCntX        5#CharPosCntY         6CharW             7CharH            8fname
     elmm = [listl[0],listl[2],listtxtS[textCnt][5],listtxtS[textCnt][0],listtxtS[textCnt][1],listtxtS[textCnt][2],listtxtS[textCnt][3],listtxtS[textCnt][4],fname]
 #YOLOv5                 
 #    elmm = [listl[0],listl[1],listl[2],listtxtS[textCnt][0],listtxtS[textCnt][1],listtxtS[textCnt][2],listtxtS[textCnt][3],listtxtS[textCnt][4],fname]
@@ -72,7 +74,7 @@ for listl in lst:
 types = ('jpg','jpeg','png')
 filespg = []
 for t in types:
-    filespg += glob.glob("C:/yolo/runs/detect/predict/*." + t, recursive=True)
+    filespg += glob.glob("C:/yolo/ultralytics/runs/detect/predict/*." + t, recursive=True)
 print(len(filespg))
 
 for file in filespg:
@@ -97,6 +99,8 @@ for file in filespg:
         excelWRl.append(elmm)
 
 sortedexcelWRl = sorted(excelWRl, key=lambda x:(x[0], x[4]))
+
+print("Sorted predict data")
 
 exName = ""
 exPosR = 0
@@ -182,6 +186,7 @@ for dataelm in sortedexcelWRl:
     ws.cell(row=exPosR, column=18).value = fcc      
 
     if filepathname != fnamesv:
+        print("letter of checking",fnamesv)
         fnamesv = filepathname
         addwcol = 0
         addhrow = 0
@@ -204,6 +209,7 @@ for dataelm in sortedexcelWRl:
     ws.cell(row=exPosR, column=21).value = fforgX 
 
 #    lFwx = int(float(exName[4]) * float(fwx) * 1)+ int(float(exName[6]) * float(fwx) * 0.5)
+#### ここで文字の左側を開始位置にしている　中央値ではない
     lFwx = int(float(exName[4]) * float(fwx) * 1) - int(float(exName[6]) * float(fwx) * 0.5)
     ws.cell(row=exPosR, column=22).value = lFwx
     lFhy = int(float(exName[5]) * float(fhy) * 1) 
@@ -217,6 +223,7 @@ for dataelm in sortedexcelWRl:
 #
     ws.cell(row=exPosR, column=25).value = ttlFwx 
     ws.cell(row=exPosR, column=26).value = ttlFhy
+#### ここのleftend rightend は間違っている（左に半文字分ズレている）が、調整がめんどくさいので一旦このまま　
     leftend = int((float(exName[4]) - (float(exName[6]) * 0.5)) *  float(fwx)) + fforgX
     rightend = int((float(exName[4]) + (float(exName[6]) * 0.5)) *  float(fwx)) + fforgX
 #               fn:0     ft:1   char:2    cls:3      rate:4     tx:5    ty:6    le:7      re:8    aw:9
@@ -224,7 +231,8 @@ for dataelm in sortedexcelWRl:
     if lLpercent > 0:
         mkexposl.append(mkexpos)
 
-wb.save(dirOfPredx + "exName" + ".xlsx")     
+wb.save(dirOfPredx + "exName" + ".xlsx")   
+print("exname saved")  
 
 sdnposl = sorted(mkexposl, key=lambda x:(x[0],x[6])) 
 
@@ -401,7 +409,7 @@ for i in range(0,len(derai)):
     cherai.append(ncElm)
 
 serai = sorted(cherai, key=lambda x:(x[0],x[11],x[10],x[5])) 
-
+print("len-serai",len(serai))
 
 for i in reversed(range(1, len(serai))):
     if abs(serai[i - 1][5] - serai[i][5]) < 5 and abs(serai[i - 1][6] - serai[i][6]) < 5 and \
@@ -618,7 +626,7 @@ for i in range(0, len(kunai) - 1):
                 mxrai = sorted(temperai, key=lambda x:(x[0],x[8]),reverse=True)
                 mirai = sorted(temperai, key=lambda x:(x[0],x[7]))
 #                       fn:0         ft:1        char:2      cls:3       rate:4      tx:5        ty:6     
-#                       le:7         re:8        aw:9          CC:10      lc:11
+#                       le:7         re:8        aw:9          CC:10      l-class:11
                 tElm = [strai[0][0],strai[0][1],strai[0][2],strai[0][3],strai[0][4],strai[0][5],strai[0][6],
                         mirai[0][7],mxrai[0][8],strai[0][9],strai[0][10],strai[0][11],strai[0][12],strai[0][13],strai[0][14]]
                 derai.append(tElm)
@@ -669,7 +677,7 @@ xerai = []
 
 #          fn:0       ft:1     char:2     cls:3    rate:4     tx:5       ty:6     le:7       re:8     aw:9     CC:10      lc:11   cc2:12 
 eraElm = [sdp[0][0],sdp[0][1],sdp[0][2],sdp[0][3],sdp[0][4],sdp[0][5],sdp[0][6],sdp[0][7],sdp[0][8],sdp[0][9],sdp[0][10],sdp[0][11],1]
-#print(eraElm)
+print(eraElm)
 xerai.append(eraElm)
 colc = 1
 for i in range(1,len(sdp)):
@@ -703,7 +711,7 @@ for i in range(1,len(sdp)):
     elif diffx > 14:
             colc = colc + 1
 #               fn:0     ft:1     char:2     cls:3    rate:4     tx:5       ty:6     le:7      
-#               re:8     aw:9     CC:10      lc:11   cc2:12 
+#               re:8     aw:9     CC:10      l-class:11   cc2:12 
     eraEsp = [sdp[i][0],sdp[i][1],sdp[i][2],sdp[i][3],sdp[i][4],sdp[i][5],sdp[i][6],sdp[i][7],
               sdp[i][8],sdp[i][9],sdp[i][10],sdp[i][11],colc]
     xerai.append(eraEsp)
@@ -718,10 +726,15 @@ xera = []
 for i in range(0,len(sspt)):
     fnameSpr = sspt[i][0]
     if fnameSprsv != fnameSpr:
-        tmplistsel = list(filter(lambda x: tmp_list[x][0] == fnameSpr, tmp_list))
-#        tmplistsel = [i for i in tmp_list if mp_list[i][0] == fnameSpr]
-        print("len tmp_listsel",len(tmplistsel))
+        tmplistsel = []
+        for j in range(0, len(stmp_list)):
+            if stmp_list[j][0] == fnameSpr:
+                tmplistsel.append(stmp_list[j]) 
+        print("len tmp_listsel",len(tmplistsel),"sample",tmplistsel[0])
+        fnameSprsv = fnameSpr
     findSpr = 0
+    minx  = 0
+    miny = 0
     for idxl in range(0,len(tmplistsel)):
         # 4つの点を定義
         p1 = (tmplistsel[idxl][1], tmplistsel[idxl][2])
@@ -730,11 +743,18 @@ for i in range(0,len(sspt)):
         p4 = (tmplistsel[idxl][7], tmplistsel[idxl][8])
         px = tmplistsel[idxl][9]
         minx = min(tmplistsel[idxl][1],tmplistsel[idxl][3],tmplistsel[idxl][5],tmplistsel[idxl][7])
-        miny = min(tmplistsel[idxl][2],tmplistsel[idxl][4],tmplistsel[idxl][6],tmplistsel[idxl][8])
+        if minx == tmplistsel[idxl][1]:
+            miny = tmplistsel[idxl][2]
+        elif minx == tmplistsel[idxl][3]:
+            miny = tmplistsel[idxl][4]
+        elif minx == tmplistsel[idxl][5]:
+            miny = tmplistsel[idxl][6]
+        elif minx == tmplistsel[idxl][7]:
+            miny = tmplistsel[idxl][8]
         # 多角形を定義
         polygon = Polygon([p1, p2, p3, p4])
-        xc = sspt[i][5]
-        yc = sspt[i][6]
+        xc = sspt[i][5] + 2
+        yc = sspt[i][6] + 1
         point = Point((xc,yc))
         if polygon.contains(point):
             findSpr = px
@@ -742,6 +762,11 @@ for i in range(0,len(sspt)):
     if findSpr == 0:
         minx = xc
         miny = yc
+    if minx < 0:
+        minx = 0
+    if miny < 0:
+        miny = 0
+
     xeraSpr = [sspt[i][0],sspt[i][1],sspt[i][2],sspt[i][3],sspt[i][4],sspt[i][5],sspt[i][6],
                sspt[i][7],sspt[i][8],sspt[i][9],sspt[i][10],sspt[i][11],sspt[i][12],findSpr,minx,miny]
     xera.append(xeraSpr)
@@ -760,8 +785,8 @@ for i in range(0,len(sspt)):
     wst.cell(row=j, column=13).value = xerai[i][11]
     wst.cell(row=j, column=14).value = xerai[i][12]
     wst.cell(row=j, column=15).value = findSpr
-    wst.cell(row=j, column=15).value = minx
-    wst.cell(row=j, column=15).value = miny
+    wst.cell(row=j, column=16).value = minx
+    wst.cell(row=j, column=17).value = miny
 
 wbt.save(dirOfPredx + "exNameBigg" + ".xlsx") 
 
@@ -777,13 +802,14 @@ ratesv = 0
 writeCnt = 0
 charstr = ""
 
+
 for clsElm in sera:  
     exOutNm = clsElm[0]
     if exOutNmsv != exOutNm:
         if exOutNmsv != "":
-            wb.save(dirOfPredx + exOutNmsv + ".xlsx")    
+            wb.save(dirOfPredx + exOutNmsv + ".xlsx") 
         wb = Workbook()
-        ws = wb.active          
+        ws = wb.active
         exOutNmsv = exOutNm
 
         column_width = {'A': 2, 'B': 0.4, 'C': 0.4, 'D': 0.4, 'E': 0.4,'F': 0.4, 'G': 0.4, 'H': 0.4,
@@ -870,53 +896,67 @@ for clsElm in sera:
                     'TO': 0.4, 'TP': 0.4, 'TQ': 0.4, 'TR': 0.4, 'TS': 0.4,'TT': 0.4, 'TU': 0.4, 'TV': 0.4,
                     'TW': 0.4, 'TX': 0.4, 'TY': 0.4, 'TZ': 0.4}
 
-
  
         for col, width in column_width.items():
             ws.column_dimensions[col].width = width
 
         for shi in range(2,200):
             ws.row_dimensions[shi].height = 2
+
         keysDict = list(column_width.keys())
 
-    if (charclcsv != clsElm[13]) or (clsElm[13] == 0):
-        if clsElm[13] != 0:
-            colidx = int(int(clsElm[14] / 10)) + 1
-            rowidy = int(int(clsElm[15] / 45)) + 1
-        else:
-            colidx = int(int(clsElm[5] / 10)) + 1
-            rowidy = int(int(clsElm[6] / 45)) + 1            
-        charclcsv = clsElm[13]
+##NEW2
+    if charclcsv != clsElm[13]:
+        if len(charstr) > 0: 
+            ws.cell(row=rowidy, column=1).value = "a"
+            ws.cell(row=1, column=colidx).value = "a" 
+            ws.cell(row=rowidy, column=colidx).value = charstr
+            ws.cell(row=rowidy, column=colidx).alignment = Alignment(vertical='center')  
+            dicidx = keysDict[colidx + 1]
+            ws.column_dimensions[dicidx].width = 1
+            ws.row_dimensions[rowidy].height = 25
         charstr = ""
-#        charclysv = clsElm[11]
-#        charclxsv = clsElm[12]
-        if charclysv != clsElm[11]:
+        charclysv = clsElm[11]
+        charclxsv = clsElm[12]
+        charclcsv = clsElm[13] 
+    else:
+        if charclysv != clsElm[11]:       
             if len(charstr) > 0: 
                 ws.cell(row=rowidy, column=1).value = "a"
+                ws.cell(row=1, column=colidx).value = "a" 
                 ws.cell(row=rowidy, column=colidx).value = charstr
                 ws.cell(row=rowidy, column=colidx).alignment = Alignment(vertical='center')  
                 dicidx = keysDict[colidx + 1]
                 ws.column_dimensions[dicidx].width = 1
                 ws.row_dimensions[rowidy].height = 25
-            charstr = charstr + " "
+            if charclcsv == 0:
+                charstr =  ""
+            else:
+                charstr =  charstr + "  "
             charclysv = clsElm[11]
             charclxsv = clsElm[12]
-#            colidx = int(int(clsElm[5] / 10)) + 1
         else:
             if charclxsv != clsElm[12]:
                 if len(charstr) > 0:
+                    ws.cell(row=rowidy, column=1).value = "a"
                     ws.cell(row=1, column=colidx).value = "a" 
                     ws.cell(row=rowidy, column=colidx).value = charstr
                     ws.cell(row=rowidy, column=colidx).alignment = Alignment(vertical='center')
                     dicidx = keysDict[colidx + 1]
                     ws.column_dimensions[dicidx].width = 1
                     ws.row_dimensions[rowidy].height = 25
-                charstr = charstr + " "
+                if charclcsv == 0:
+                    charstr =  ""
+                else:
+                    charstr =  charstr + "  "
                 charclxsv = clsElm[12]
-#                colidx = int(int(clsElm[5] / 10)) + 1
-    
-    #rowidy = int(clsElm[11]) * 2 + 1
-#    rowidy = int(int(clsElm[6] / 45)) + 1
+
+    if clsElm[13] == 0:
+        colidx = int(int(clsElm[5] / 10)) + 1
+        rowidy = int(int(clsElm[6] / 45)) + 1
+    else:
+        colidx = int(int(clsElm[14] / 10)) + 1
+        rowidy = int(int(clsElm[15] / 45)) + 1
 
     if str(clsElm[2]) == "MinusMinus":
         char = "-"
@@ -927,4 +967,5 @@ for clsElm in sera:
             char = str(clsElm[2])
     charstr = charstr + char
 
-wb.save(dirOfPredx + exOutNmsv + ".xlsx")       
+wb.save(dirOfPredx + exOutNmsv + ".xlsx")
+     

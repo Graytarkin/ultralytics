@@ -31,12 +31,12 @@ proc = subprocess.Popen(command4)
 result = proc.communicate() 
 print("org-images pred")
 
-command5 = ["python.exe", "ultralytics/concyolypx11.py"]
+command5 = ["python.exe", "ultralytics/concyolyp11.py"]
 proc = subprocess.Popen(command5)  
 result = proc.communicate() 
 print("sub-images pred")
 
-command6 = ["python.exe", "ultralytics/concyolojp11.py"]
+command6 = ["python.exe", "ultralytics/concyolojpx11.py"]
 proc = subprocess.Popen(command6)  
 result = proc.communicate() 
 print("main-sub marged")
@@ -49,7 +49,7 @@ print("txtcsv Pi Bi")
 command8 = ["python.exe", "ultralytics/bigRect.py"]
 proc = subprocess.Popen(command8)  
 result = proc.communicate() 
-print("Pi Bi")
+print("image Pi Bi")
 
 command9 = ["python.exe", "ultralytics/copyafterV11.py"]
 proc = subprocess.Popen(command9)  

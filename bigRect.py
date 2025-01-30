@@ -11,7 +11,7 @@ dir_path = "C:/yolo/AI-Pred-Data/step5/"
 
 wb = Workbook()
 ws = wb.active
-exLine = 2
+exLine = 1
 
 for file in files:
     filename = os.path.basename(file)
@@ -179,7 +179,8 @@ for file in files:
             ws.cell(row=exLine, column=7).value = int(pcy / 2)
             ws.cell(row=exLine, column=8).value = int(pdx)
             ws.cell(row=exLine, column=9).value = int(pdy / 2)   
-            ws.cell(row=exLine, column=10).value = int(exLine)  
+            ws.cell(row=exLine, column=10).value = int(exLine) 
+            ws.cell(row=exLine, column=11).value = int(area)
             exLine += 1
 
         if i > 500000:
@@ -187,7 +188,7 @@ for file in files:
     fohight, fowidth, focolor = disp2.shape
     efhight = int(fohight / 2)
     resultF = cv2.resize(disp2, (fowidth, efhight)) 
-    cv2.imwrite(dir_path + "test" + filename + ".jpeg", resultF)
+    cv2.imwrite(dir_path + "0001BG" +  filename + ".jpeg", resultF)
 
 
 wb.save(dir_path + "bigRect" + ".xlsx")    

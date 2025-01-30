@@ -39,7 +39,7 @@ for file in files:
     csizey = []
     for mrow_img in np.array_split(mcimg, mrows, axis=0):
         for chunk in np.array_split(mrow_img, mcols, axis=1):
-            sy, sx = chunk.shape
+            sy, sx, sc = chunk.shape
             csizex.append(sx)
             csizey.append(sy) 
             chunks.append(chunk)
