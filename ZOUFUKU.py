@@ -6,7 +6,7 @@ import random
 import matplotlib.pyplot as plt
 #%matplotlib inline
 
-files = glob.glob("C:/workspace/yolo/addmore-weak2" + "/*.jpg", recursive=True)
+files = glob.glob("C:/workspace/yolo/addmore-weak3" + "/*.jpeg", recursive=True)
 # input_dir = "C:/workspace/yolowork/nextbatterbox"
 output_dir = "C:/workspace/yolo/addmore-weakttl"
 
@@ -18,7 +18,7 @@ for file in files:
 #img = cv2.imread(input_dir + "/N0N273N1N125N23N101N14N268N75.jpeg",0)
     rows,cols=img.shape[:2]
 #sumimg = img/255.0
-    for i in range(10):
+    for i in range(5):
         var=6
         pts1 = np.float32([[0,0],[0,rows],[cols,rows],[cols,0]])
         pts2 = np.float32([[random.randint(-var,var),random.randint(-var,var)],
